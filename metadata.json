@@ -1,0 +1,6 @@
+{
+  "name": "Florida Fast Home Sale",
+  "description": "A modern, straightforward landing page for a cash home buyer, featuring lead capture mechanics and responsive design.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
