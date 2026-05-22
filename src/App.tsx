@@ -131,8 +131,8 @@ export default function App() {
             <p className="text-[#5C6B5C] font-medium max-w-2xl mx-auto">No repairs, no cleaning, no hassle. Take a look at some of the properties we've purchased exactly as they were.</p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {[prop1, prop2, prop3, prop4, prop5, prop6, prop7, prop8, prop9, prop10].map((img, i) => (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[prop1, prop2, prop3, prop4, prop5, prop6, prop7, prop8].map((img, i) => (
               <div key={i} className="aspect-square rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow group border border-[#E1EADB]">
                 <img
                   src={img}
