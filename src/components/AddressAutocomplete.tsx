@@ -64,7 +64,7 @@ export function AddressAutocomplete({
   // Initialise Google services once the script is ready
   useEffect(() => {
     if (mapsStatus !== "ready") return;
-    if (!google?.maps?.places) return;
+    if (!google?.maps?.places?.AutocompleteService) return;
     autocompleteService.current = new google.maps.places.AutocompleteService();
     if (hiddenDivRef.current) {
       placesService.current = new google.maps.places.PlacesService(hiddenDivRef.current);
