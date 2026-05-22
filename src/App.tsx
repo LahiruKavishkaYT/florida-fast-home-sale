@@ -253,13 +253,13 @@ export default function App() {
             <h2 className="text-3xl sm:text-4xl font-heading font-bold mb-8 text-[#1A3018]">Meet Chris and Jose</h2>
             <div className="space-y-6 text-[#5C6B5C] text-sm leading-loose">
               <p>
-                I've been working with homeowners like you to sell your property with the right amount of speed and convenience—so you deal with the least amount of stress. I make fair cash offers and buy properties as-is. My goal is to make this as smooth and simple as possible, and I'll walk you through every step at your own pace. You won't have to worry—I'll handle the details for you.
+                I've been working with homeowners like you to sell your property with the right amount of speed and convenience so you deal with the least amount of stress. I make fair cash offers and buy properties as-is. My goal is to make this as smooth and simple as possible, and I'll walk you through every step at your own pace. You won't have to worry I'll handle the details for you.
               </p>
               <p>
-                As someone with experience, I'll help you explore all the options available so you can make the decision that's truly best for you. I always keep your best interest at heart. Honesty, integrity, and great service are what I live by.
+                As someone with experience, I'll help you explore all the options available so you can make the decision that's truly best for you. I always keep your best interest at heart. Honesty, integrity and great service are what I live by.
               </p>
               <p>
-                I run a local family business, and I've built a reputation you can trust. I work closely with a reputable title company that can confirm—I follow through. I look forward to working with you.
+                I run a local family business, and I've built a reputation you can trust. I work closely with a reputable title company that can confirm I follow through. I look forward to working with you.
               </p>
             </div>
           </div>
