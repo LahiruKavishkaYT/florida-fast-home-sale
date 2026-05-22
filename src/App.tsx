@@ -13,13 +13,19 @@ import prop9 from "./assets/prop9.jpeg";
 import prop10 from "./assets/prop10.jpeg";
 import prop11 from "./assets/prop11.jpeg";
 import team3 from "./assets/team-3.jpg";
+import jose from "./assets/jose.jpeg";
 
 const carouselImages = [prop11, prop1, prop9];
+const teamImages = [team3, jose];
+const teamNames = ["Chris", "Jose"];
 
 export default function App() {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const prevSlide = () => setCarouselIndex((i) => (i - 1 + carouselImages.length) % carouselImages.length);
   const nextSlide = () => setCarouselIndex((i) => (i + 1) % carouselImages.length);
+  const [teamIndex, setTeamIndex] = useState(0);
+  const prevTeam = () => setTeamIndex((i) => (i - 1 + teamImages.length) % teamImages.length);
+  const nextTeam = () => setTeamIndex((i) => (i + 1) % teamImages.length);
 
   return (
     <div className="min-h-screen font-sans bg-[#FDFBF7] text-[#2D3A2D]">
@@ -244,7 +250,7 @@ export default function App() {
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 lg:gap-24 items-center">
           <div>
             <span className="text-[10px] font-bold text-[#A1B0A1] tracking-widest uppercase mb-2 block">About Us</span>
-            <h2 className="text-3xl sm:text-4xl font-heading font-bold mb-8 text-[#1A3018]">Meet Chris</h2>
+            <h2 className="text-3xl sm:text-4xl font-heading font-bold mb-8 text-[#1A3018]">Meet Chris and Jose</h2>
             <div className="space-y-6 text-[#5C6B5C] text-sm leading-loose">
               <p>
                 I've been working with homeowners like you to sell your property with the right amount of speed and convenience—so you deal with the least amount of stress. I make fair cash offers and buy properties as-is. My goal is to make this as smooth and simple as possible, and I'll walk you through every step at your own pace. You won't have to worry—I'll handle the details for you.
@@ -258,12 +264,26 @@ export default function App() {
             </div>
           </div>
           
-          <div className="relative rounded-[48px] overflow-hidden aspect-square shadow-2xl border border-[#E1EADB] transform md:rotate-2 hover:rotate-0 transition-transform duration-500">
-            <img
-              src={team3}
-              alt="Chris - Our home buying expert"
-              className="w-full h-full object-cover"
-            />
+          <div className="flex flex-col items-center gap-4">
+            <div className="relative rounded-[48px] overflow-hidden aspect-square w-full shadow-2xl border border-[#E1EADB] transform md:rotate-2 hover:rotate-0 transition-transform duration-500 group">
+              <img
+                src={teamImages[teamIndex]}
+                alt={`${teamNames[teamIndex]} - Our home buying expert`}
+                className="w-full h-full object-cover object-top transition-opacity duration-300"
+              />
+              <button onClick={prevTeam} className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/30 hover:bg-white/50 text-white rounded-full flex items-center justify-center backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100">
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <button onClick={nextTeam} className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/30 hover:bg-white/50 text-white rounded-full flex items-center justify-center backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100">
+                <ChevronRight className="w-6 h-6" />
+              </button>
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                {teamImages.map((_, i) => (
+                  <button key={i} onClick={() => setTeamIndex(i)} className={`w-2 h-2 rounded-full transition-all ${i === teamIndex ? 'bg-white scale-125' : 'bg-white/50'}`} />
+                ))}
+              </div>
+            </div>
+            <p className="text-[#1A3018] font-bold text-lg">{teamNames[teamIndex]}</p>
           </div>
         </div>
       </section>
