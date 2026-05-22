@@ -1,6 +1,9 @@
 import { useState } from "react";
-import { CheckCircle2, ChevronLeft, ChevronRight, XCircle, FileText, Users, Banknote } from "lucide-react";
+import { CheckCircle2, ChevronLeft, ChevronRight, XCircle, FileText, Users, Banknote, Phone } from "lucide-react";
 import { Logo } from "./components/Logo";
+import { useGoogleMaps } from "./hooks/useGoogleMaps";
+import { AddressAutocomplete } from "./components/AddressAutocomplete";
+import type { PlaceResult } from "./components/AddressAutocomplete";
 import prop1 from "./assets/prop1.jpeg";
 import prop2 from "./assets/prop2.jpeg";
 import prop3 from "./assets/prop3.jpeg";
@@ -21,6 +24,18 @@ const teamImages = [team3, jose];
 const teamNames = ["Chris", "Jose"];
 
 export default function App() {
+  // Google Maps
+  const mapsStatus = useGoogleMaps();
+  const [selectedPlace, setSelectedPlace] = useState<PlaceResult | null>(null);
+
+  const handleSubmit = (e: { preventDefault(): void }) => {
+    e.preventDefault();
+    if (!selectedPlace) return;
+    // TODO: send to CRM — selectedPlace contains address, lat, lng, placeId
+    console.log("Submitting lead:", selectedPlace);
+  };
+
+  // Carousels
   const [carouselIndex, setCarouselIndex] = useState(0);
   const prevSlide = () => setCarouselIndex((i) => (i - 1 + carouselImages.length) % carouselImages.length);
   const nextSlide = () => setCarouselIndex((i) => (i + 1) % carouselImages.length);
@@ -44,6 +59,10 @@ export default function App() {
               Call Us: (689) 220-2289
             </a>
           </div>
+          <a href="tel:6892202289" className="sm:hidden bg-[#2D5A27] text-white px-4 py-2.5 rounded-full text-xs font-semibold hover:bg-[#1E3D1A] transition-colors flex items-center gap-1.5">
+            <Phone className="w-3.5 h-3.5" />
+            Call Now
+          </a>
         </div>
       </nav>
 
@@ -60,22 +79,25 @@ export default function App() {
         
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center text-[#1A3018]">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold mb-6 leading-[1.1]">
-            The Simplest Way to Sell Your Florida Home <span className="italic font-medium text-[#2D5A27] relative whitespace-nowrap"><span className="relative z-10">– without Fees.</span></span>
+            The Simplest Way to Sell Your Florida Home <span className="italic font-medium text-[#2D5A27] relative"><span className="relative z-10">– without Fees.</span></span>
           </h1>
           <p className="text-lg sm:text-xl text-[#5C6B5C] mb-10 max-w-3xl mx-auto">
             At <span className="text-[#1A3018] font-bold">Florida Fast Home Sale</span>, we believe the house selling process should be faster, easier, and hassle-free for Florida home sellers. <span className="text-[#2D5A27] font-bold underline decoration-[#2D5A27] underline-offset-4">Get Your Offer Today!</span>
           </p>
           
-          <form className="max-w-2xl mx-auto flex flex-col sm:flex-row gap-3 bg-white p-4 rounded-[32px] shadow-xl shadow-green-900/5 border border-[#E1EADB]">
-            <input 
-              type="text" 
-              placeholder="Enter your home address" 
-              className="flex-1 px-6 py-4 rounded-2xl bg-[#F8FAF8] border border-[#E1EADB] text-[#1A3018] focus:outline-none focus:ring-2 focus:ring-[#2D5A27]"
-              required
+          <form
+            onSubmit={handleSubmit}
+            className="max-w-2xl mx-auto flex flex-col sm:flex-row gap-3 bg-white p-4 rounded-[32px] shadow-xl shadow-green-900/5 border border-[#E1EADB]"
+          >
+            <AddressAutocomplete
+              mapsStatus={mapsStatus}
+              onSelect={setSelectedPlace}
+              placeholder="Enter your home address"
             />
-            <button 
-              type="submit" 
-              className="px-8 py-4 bg-[#2D5A27] text-white font-bold rounded-2xl shadow-lg shadow-green-900/20 hover:scale-[1.02] transition-transform whitespace-nowrap"
+            <button
+              type="submit"
+              disabled={!selectedPlace}
+              className="px-8 py-4 bg-[#2D5A27] text-white font-bold rounded-2xl shadow-lg shadow-green-900/20 hover:scale-[1.02] transition-transform whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               GET YOUR OFFER
             </button>
@@ -143,10 +165,10 @@ export default function App() {
                 className="w-full h-full object-cover transition-opacity duration-300"
               />
             </div>
-            <button onClick={prevPortfolio} className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/80 hover:bg-white text-[#1A3018] rounded-full flex items-center justify-center shadow-md transition-all opacity-0 group-hover:opacity-100">
+            <button onClick={prevPortfolio} className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/80 hover:bg-white text-[#1A3018] rounded-full flex items-center justify-center shadow-md transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100">
               <ChevronLeft className="w-6 h-6" />
             </button>
-            <button onClick={nextPortfolio} className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/80 hover:bg-white text-[#1A3018] rounded-full flex items-center justify-center shadow-md transition-all opacity-0 group-hover:opacity-100">
+            <button onClick={nextPortfolio} className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/80 hover:bg-white text-[#1A3018] rounded-full flex items-center justify-center shadow-md transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100">
               <ChevronRight className="w-6 h-6" />
             </button>
             <div className="flex justify-center gap-2 mt-5">
@@ -190,10 +212,10 @@ export default function App() {
                 alt={`Previous home bought ${carouselIndex + 1}`}
                 className="w-full h-full object-cover transition-opacity duration-300"
               />
-              <button onClick={prevSlide} className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/30 hover:bg-white/50 text-white rounded-full flex items-center justify-center backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100">
+              <button onClick={prevSlide} className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/30 hover:bg-white/50 text-white rounded-full flex items-center justify-center backdrop-blur-sm transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100">
                 <ChevronLeft className="w-6 h-6" />
               </button>
-              <button onClick={nextSlide} className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/30 hover:bg-white/50 text-white rounded-full flex items-center justify-center backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100">
+              <button onClick={nextSlide} className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/30 hover:bg-white/50 text-white rounded-full flex items-center justify-center backdrop-blur-sm transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100">
                 <ChevronRight className="w-6 h-6" />
               </button>
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
@@ -218,7 +240,7 @@ export default function App() {
         </div>
         
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 lg:gap-0 font-medium">
-          <div className="bg-[#1A3018] text-[#FDFBF7] p-8 sm:p-12 md:rounded-l-[32px] lg:my-8 shadow-xl">
+          <div className="bg-[#1A3018] text-[#FDFBF7] p-8 sm:p-12 rounded-[32px] md:rounded-r-none lg:my-8 shadow-xl">
             <h3 className="text-2xl font-bold mb-8 text-white">Traditional Process</h3>
             <ul className="space-y-6">
               {[
@@ -237,7 +259,7 @@ export default function App() {
             </ul>
           </div>
           
-          <div className="bg-[#2D5A27] text-white p-8 sm:p-12 md:rounded-r-[32px] md:scale-110 shadow-2xl relative z-10 border border-[#1E3D1A]">
+          <div className="bg-[#2D5A27] text-white p-8 sm:p-12 rounded-[32px] md:rounded-l-none md:scale-105 shadow-2xl relative z-10 border border-[#1E3D1A]">
             <h3 className="text-3xl font-bold mb-8 drop-shadow-sm">Our Cash Offer Program</h3>
             <ul className="space-y-6">
               {[
@@ -284,10 +306,10 @@ export default function App() {
                 alt={`${teamNames[teamIndex]} - Our home buying expert`}
                 className="w-full h-full object-cover object-top transition-opacity duration-300"
               />
-              <button onClick={prevTeam} className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/30 hover:bg-white/50 text-white rounded-full flex items-center justify-center backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100">
+              <button onClick={prevTeam} className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/30 hover:bg-white/50 text-white rounded-full flex items-center justify-center backdrop-blur-sm transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100">
                 <ChevronLeft className="w-6 h-6" />
               </button>
-              <button onClick={nextTeam} className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/30 hover:bg-white/50 text-white rounded-full flex items-center justify-center backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100">
+              <button onClick={nextTeam} className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/30 hover:bg-white/50 text-white rounded-full flex items-center justify-center backdrop-blur-sm transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100">
                 <ChevronRight className="w-6 h-6" />
               </button>
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
@@ -314,16 +336,20 @@ export default function App() {
         
         <div className="relative z-10 w-full max-w-3xl bg-white/95 backdrop-blur-md p-10 sm:p-14 rounded-[32px] text-center shadow-2xl border border-[#E1EADB]">
           <h2 className="text-3xl sm:text-4xl font-heading font-bold mb-8 text-[#1A3018]">Submit Your Property Here!</h2>
-          <form className="flex flex-col sm:flex-row gap-3 bg-[#F8FAF8] p-2 rounded-2xl border border-[#E1EADB]">
-            <input 
-              type="text" 
-              placeholder="Enter your home address" 
-              className="flex-1 px-6 py-4 rounded-xl bg-transparent text-[#1A3018] focus:outline-none placeholder:text-[#A1B0A1]"
-              required
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col sm:flex-row gap-3 bg-[#F8FAF8] p-2 rounded-2xl border border-[#E1EADB]"
+          >
+            <AddressAutocomplete
+              mapsStatus={mapsStatus}
+              onSelect={setSelectedPlace}
+              placeholder="Enter your home address"
+              inputClassName="bg-transparent border-transparent focus:ring-0 focus:border-transparent pl-11"
             />
-            <button 
-              type="submit" 
-              className="px-8 py-4 bg-[#2D5A27] text-white font-bold rounded-xl hover:bg-[#1E3D1A] transition-colors whitespace-nowrap shadow-md"
+            <button
+              type="submit"
+              disabled={!selectedPlace}
+              className="px-8 py-4 bg-[#2D5A27] text-white font-bold rounded-xl hover:bg-[#1E3D1A] transition-colors whitespace-nowrap shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
             >
               GET YOUR OFFER
             </button>
