@@ -8,8 +8,48 @@ interface OfferFormProps {
   onBack: () => void;
 }
 
+interface FormState {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  homeAddress: string;
+  notes: string;
+  consent: boolean;
+}
+
+type FieldName = keyof Omit<FormState, "notes" | "consent">;
+
+function validate(form: FormState) {
+  const errors: Partial<Record<FieldName | "consent", string>> = {};
+
+  if (!form.firstName.trim()) errors.firstName = "First name is required.";
+  if (!form.lastName.trim()) errors.lastName = "Last name is required.";
+
+  if (!form.email.trim()) {
+    errors.email = "Email is required.";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+    errors.email = "Enter a valid email address.";
+  }
+
+  const digits = form.phone.replace(/\D/g, "");
+  if (!form.phone.trim()) {
+    errors.phone = "Phone number is required.";
+  } else if (digits.length < 10) {
+    errors.phone = "Enter a valid 10-digit phone number.";
+  }
+
+  if (!form.homeAddress.trim()) errors.homeAddress = "Address is required.";
+  if (!form.consent) errors.consent = "You must agree to be contacted.";
+
+  return errors;
+}
+
+const inputBase =
+  "w-full px-4 py-3 rounded-xl bg-[#F8FAF8] border text-[#1A3018] text-sm focus:outline-none focus:ring-2 focus:ring-[#2D5A27] placeholder:text-[#A1B0A1] transition-colors";
+
 export function OfferForm({ address, onSubmit, onBack }: OfferFormProps) {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormState>({
     firstName: "",
     lastName: "",
     email: "",
@@ -19,13 +59,12 @@ export function OfferForm({ address, onSubmit, onBack }: OfferFormProps) {
     consent: false,
   });
 
-  const isValid =
-    form.firstName.trim() &&
-    form.lastName.trim() &&
-    form.email.trim() &&
-    form.phone.trim() &&
-    form.homeAddress.trim() &&
-    form.consent;
+  const [touched, setTouched] = useState<Partial<Record<string, boolean>>>({});
+  const [submitAttempted, setSubmitAttempted] = useState(false);
+
+  const errors = validate(form);
+  const showError = (field: string) =>
+    (touched[field] || submitAttempted) && errors[field as FieldName];
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -37,12 +76,19 @@ export function OfferForm({ address, onSubmit, onBack }: OfferFormProps) {
     }));
   };
 
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setTouched((prev) => ({ ...prev, [e.target.name]: true }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isValid) return;
-    console.log("Lead submitted:", form);
+    setSubmitAttempted(true);
+    if (Object.keys(errors).length > 0) return;
     onSubmit();
   };
+
+  const fieldClass = (field: string) =>
+    `${inputBase} ${showError(field) ? "border-red-400 focus:ring-red-400" : "border-[#E1EADB]"}`;
 
   return (
     <div className="min-h-screen font-sans bg-[#FDFBF7] text-[#2D3A2D] relative flex flex-col">
@@ -92,7 +138,6 @@ export function OfferForm({ address, onSubmit, onBack }: OfferFormProps) {
           </div>
 
           <form onSubmit={handleSubmit} noValidate className="space-y-5">
-            {/* Required note */}
             <p className="text-xs text-[#C05000] font-medium">
               "*" indicates required fields
             </p>
@@ -110,9 +155,12 @@ export function OfferForm({ address, onSubmit, onBack }: OfferFormProps) {
                     placeholder="First"
                     value={form.firstName}
                     onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 rounded-xl bg-[#F8FAF8] border border-[#E1EADB] text-[#1A3018] text-sm focus:outline-none focus:ring-2 focus:ring-[#2D5A27] placeholder:text-[#A1B0A1]"
+                    onBlur={handleBlur}
+                    className={fieldClass("firstName")}
                   />
+                  {showError("firstName") && (
+                    <p className="mt-1 text-xs text-red-500">{errors.firstName}</p>
+                  )}
                 </div>
                 <div>
                   <input
@@ -121,9 +169,12 @@ export function OfferForm({ address, onSubmit, onBack }: OfferFormProps) {
                     placeholder="Last"
                     value={form.lastName}
                     onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 rounded-xl bg-[#F8FAF8] border border-[#E1EADB] text-[#1A3018] text-sm focus:outline-none focus:ring-2 focus:ring-[#2D5A27] placeholder:text-[#A1B0A1]"
+                    onBlur={handleBlur}
+                    className={fieldClass("lastName")}
                   />
+                  {showError("lastName") && (
+                    <p className="mt-1 text-xs text-red-500">{errors.lastName}</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -136,11 +187,15 @@ export function OfferForm({ address, onSubmit, onBack }: OfferFormProps) {
               <input
                 type="email"
                 name="email"
+                placeholder="you@example.com"
                 value={form.email}
                 onChange={handleChange}
-                required
-                className="w-full px-4 py-3 rounded-xl bg-[#F8FAF8] border border-[#E1EADB] text-[#1A3018] text-sm focus:outline-none focus:ring-2 focus:ring-[#2D5A27] placeholder:text-[#A1B0A1]"
+                onBlur={handleBlur}
+                className={fieldClass("email")}
               />
+              {showError("email") && (
+                <p className="mt-1 text-xs text-red-500">{errors.email}</p>
+              )}
             </div>
 
             {/* Phone */}
@@ -151,14 +206,18 @@ export function OfferForm({ address, onSubmit, onBack }: OfferFormProps) {
               <input
                 type="tel"
                 name="phone"
+                placeholder="(555) 000-0000"
                 value={form.phone}
                 onChange={handleChange}
-                required
-                className="w-full px-4 py-3 rounded-xl bg-[#F8FAF8] border border-[#E1EADB] text-[#1A3018] text-sm focus:outline-none focus:ring-2 focus:ring-[#2D5A27] placeholder:text-[#A1B0A1]"
+                onBlur={handleBlur}
+                className={fieldClass("phone")}
               />
+              {showError("phone") && (
+                <p className="mt-1 text-xs text-red-500">{errors.phone}</p>
+              )}
             </div>
 
-            {/* Home Address — pre-filled */}
+            {/* Home Address */}
             <div>
               <label className="block text-[10px] font-bold text-[#5C6B5C] tracking-widest uppercase mb-2">
                 Your Home Address <span className="text-[#C05000]">*</span>
@@ -168,9 +227,12 @@ export function OfferForm({ address, onSubmit, onBack }: OfferFormProps) {
                 name="homeAddress"
                 value={form.homeAddress}
                 onChange={handleChange}
-                required
-                className="w-full px-4 py-3 rounded-xl bg-[#F8FAF8] border border-[#E1EADB] text-[#1A3018] text-sm focus:outline-none focus:ring-2 focus:ring-[#2D5A27] placeholder:text-[#A1B0A1]"
+                onBlur={handleBlur}
+                className={fieldClass("homeAddress")}
               />
+              {showError("homeAddress") && (
+                <p className="mt-1 text-xs text-red-500">{errors.homeAddress}</p>
+              )}
             </div>
 
             {/* Notes */}
@@ -186,36 +248,41 @@ export function OfferForm({ address, onSubmit, onBack }: OfferFormProps) {
                 value={form.notes}
                 onChange={handleChange}
                 rows={4}
-                className="w-full px-4 py-3 rounded-xl bg-[#F8FAF8] border border-[#E1EADB] text-[#1A3018] text-sm focus:outline-none focus:ring-2 focus:ring-[#2D5A27] placeholder:text-[#A1B0A1] resize-none"
+                className={`${inputBase} border-[#E1EADB] resize-none`}
               />
             </div>
 
             {/* Consent */}
-            <div className="flex items-start gap-3">
-              <input
-                type="checkbox"
-                name="consent"
-                id="consent"
-                checked={form.consent}
-                onChange={handleChange}
-                className="mt-1 w-4 h-4 rounded accent-[#2D5A27] flex-shrink-0 cursor-pointer"
-              />
-              <label htmlFor="consent" className="text-xs text-[#5C6B5C] leading-relaxed cursor-pointer">
-                I agree to be contacted by Florida Fast Home Sale via call,
-                email, and text. To opt-out, you can reply 'stop' at any time
-                or click the unsubscribe link in the emails. Message and data
-                rates may apply.{" "}
-                <a href="#" className="font-bold text-[#1A3018] hover:text-[#2D5A27]">
-                  Privacy Policy
-                </a>
-              </label>
+            <div>
+              <div className="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  name="consent"
+                  id="consent"
+                  checked={form.consent}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className="mt-1 w-4 h-4 rounded accent-[#2D5A27] flex-shrink-0 cursor-pointer"
+                />
+                <label htmlFor="consent" className="text-xs text-[#5C6B5C] leading-relaxed cursor-pointer">
+                  I agree to be contacted by Florida Fast Home Sale via call,
+                  email, and text. To opt-out, you can reply 'stop' at any time
+                  or click the unsubscribe link in the emails. Message and data
+                  rates may apply.{" "}
+                  <a href="#" className="font-bold text-[#1A3018] hover:text-[#2D5A27]">
+                    Privacy Policy
+                  </a>
+                </label>
+              </div>
+              {showError("consent") && (
+                <p className="mt-1 text-xs text-red-500">{errors.consent}</p>
+              )}
             </div>
 
             {/* Submit */}
             <button
               type="submit"
-              disabled={!isValid}
-              className="w-full py-4 bg-[#2D5A27] text-white font-bold rounded-2xl shadow-lg shadow-green-900/20 hover:bg-[#1E3D1A] transition-colors text-sm tracking-widest uppercase disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-4 bg-[#2D5A27] text-white font-bold rounded-2xl shadow-lg shadow-green-900/20 hover:bg-[#1E3D1A] transition-colors text-sm tracking-widest uppercase"
             >
               Get Your Offer
             </button>

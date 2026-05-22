@@ -13,7 +13,7 @@ export function ThankYou({ onBack }: ThankYouProps) {
       <nav className="w-full bg-[#1A3018]/80 backdrop-blur-md border-b border-white/10 pb-2 pt-3">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
           <button onClick={onBack} className="flex-shrink-0 focus:outline-none">
-            <Logo className="h-10 sm:h-14 w-auto brightness-0 invert" />
+            <Logo className="h-10 sm:h-14 w-auto" inverted />
           </button>
           <a
             href="tel:6892202289"
