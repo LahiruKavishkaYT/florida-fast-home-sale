@@ -323,8 +323,8 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 flex flex-col items-center">
           <Logo className="h-16 w-auto mb-6 opacity-90 hover:opacity-100 transition-opacity drop-shadow-sm" />
           
-          <a href="tel:3214750983" className="text-2xl font-bold font-heading mb-4 text-[#1A3018] hover:text-[#2D5A27] transition-colors">
-            (321) 475-0983
+          <a href="tel:6892202289" className="text-2xl font-bold font-heading mb-4 text-[#1A3018] hover:text-[#2D5A27] transition-colors">
+            (689) 220-2289
           </a>
           
           <a href="#" className="text-sm font-bold text-[#5C6B5C] hover:text-[#2D5A27] hover:underline mb-8">
