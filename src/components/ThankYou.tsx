@@ -1,9 +1,6 @@
 import { Logo } from "./Logo";
 import { Phone } from "lucide-react";
-
-// Replace VIDEO_SRC with the actual video file path once available
-// e.g. import thankYouVideo from "../assets/thank-you.mp4";
-const VIDEO_SRC = ""; // <- paste the video URL or imported asset path here
+import thankYouVideo from "../assets/vid.mp4";
 
 interface ThankYouProps {
   onBack: () => void;
@@ -49,29 +46,13 @@ export function ThankYou({ onBack }: ThankYouProps) {
         </div>
 
         {/* Video player */}
-        <div className="w-full max-w-2xl rounded-[24px] overflow-hidden shadow-2xl border border-white/10 bg-black aspect-video flex items-center justify-center">
-          {VIDEO_SRC ? (
-            <video
-              src={VIDEO_SRC}
-              controls
-              autoPlay
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            /* Placeholder shown until video asset is provided */
-            <div className="flex flex-col items-center gap-3 text-[#5C6B5C] select-none">
-              <svg
-                className="w-16 h-16 opacity-30"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M8 5v14l11-7z" />
-              </svg>
-              <span className="text-xs tracking-widest uppercase opacity-50">
-                Video coming soon
-              </span>
-            </div>
-          )}
+        <div className="w-full max-w-2xl rounded-[24px] overflow-hidden shadow-2xl border border-white/10 bg-black aspect-video">
+          <video
+            src={thankYouVideo}
+            controls
+            playsInline
+            className="w-full h-full object-cover"
+          />
         </div>
 
         {/* CTA back */}
