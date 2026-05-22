@@ -16,6 +16,7 @@ import team3 from "./assets/team-3.jpg";
 import jose from "./assets/jose.jpeg";
 
 const carouselImages = [prop4, prop7, prop11];
+const portfolioImages = [prop1, prop2, prop3, prop4, prop5, prop6, prop7, prop8];
 const teamImages = [team3, jose];
 const teamNames = ["Chris", "Jose"];
 
@@ -23,6 +24,9 @@ export default function App() {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const prevSlide = () => setCarouselIndex((i) => (i - 1 + carouselImages.length) % carouselImages.length);
   const nextSlide = () => setCarouselIndex((i) => (i + 1) % carouselImages.length);
+  const [portfolioIndex, setPortfolioIndex] = useState(0);
+  const prevPortfolio = () => setPortfolioIndex((i) => (i - 1 + portfolioImages.length) % portfolioImages.length);
+  const nextPortfolio = () => setPortfolioIndex((i) => (i + 1) % portfolioImages.length);
   const [teamIndex, setTeamIndex] = useState(0);
   const prevTeam = () => setTeamIndex((i) => (i - 1 + teamImages.length) % teamImages.length);
   const nextTeam = () => setTeamIndex((i) => (i + 1) % teamImages.length);
@@ -131,16 +135,25 @@ export default function App() {
             <p className="text-[#5C6B5C] font-medium max-w-2xl mx-auto">No repairs, no cleaning, no hassle. Take a look at some of the properties we've purchased exactly as they were.</p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[prop1, prop2, prop3, prop4, prop5, prop6, prop7, prop8].map((img, i) => (
-              <div key={i} className="aspect-square rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow group border border-[#E1EADB]">
-                <img
-                  src={img}
-                  alt={`As-is property ${i+1}`}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-              </div>
-            ))}
+          <div className="relative w-full max-w-4xl mx-auto group">
+            <div className="aspect-[16/9] rounded-3xl overflow-hidden shadow-xl border border-[#E1EADB]">
+              <img
+                src={portfolioImages[portfolioIndex]}
+                alt={`As-is property ${portfolioIndex + 1}`}
+                className="w-full h-full object-cover transition-opacity duration-300"
+              />
+            </div>
+            <button onClick={prevPortfolio} className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/80 hover:bg-white text-[#1A3018] rounded-full flex items-center justify-center shadow-md transition-all opacity-0 group-hover:opacity-100">
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            <button onClick={nextPortfolio} className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/80 hover:bg-white text-[#1A3018] rounded-full flex items-center justify-center shadow-md transition-all opacity-0 group-hover:opacity-100">
+              <ChevronRight className="w-6 h-6" />
+            </button>
+            <div className="flex justify-center gap-2 mt-5">
+              {portfolioImages.map((_, i) => (
+                <button key={i} onClick={() => setPortfolioIndex(i)} className={`w-2 h-2 rounded-full transition-all ${i === portfolioIndex ? 'bg-[#2D5A27] scale-125' : 'bg-[#A1B0A1]'}`} />
+              ))}
+            </div>
           </div>
         </div>
       </section>
