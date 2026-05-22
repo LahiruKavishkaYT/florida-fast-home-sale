@@ -36,8 +36,8 @@ export default function App() {
             <Logo className="h-10 sm:h-14 w-auto" />
           </a>
           <div className="hidden sm:block">
-            <a href="tel:3214750983" className="bg-[#2D5A27] text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-[#1E3D1A] transition-colors">
-              Call Us: (321) 475-0983
+            <a href="tel:6892202289" className="bg-[#2D5A27] text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-[#1E3D1A] transition-colors">
+              Call Us: (689) 220-2289
             </a>
           </div>
         </div>
