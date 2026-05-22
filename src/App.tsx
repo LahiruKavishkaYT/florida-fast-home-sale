@@ -15,7 +15,7 @@ import prop11 from "./assets/prop11.jpeg";
 import team3 from "./assets/team-3.jpg";
 import jose from "./assets/jose.jpeg";
 
-const carouselImages = [prop11, prop1, prop9];
+const carouselImages = [prop4, prop7, prop11];
 const teamImages = [team3, jose];
 const teamNames = ["Chris", "Jose"];
 
