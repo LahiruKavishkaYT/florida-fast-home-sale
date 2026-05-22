@@ -4,6 +4,8 @@ import { Logo } from "./components/Logo";
 import { useGoogleMaps } from "./hooks/useGoogleMaps";
 import { AddressAutocomplete } from "./components/AddressAutocomplete";
 import type { PlaceResult } from "./components/AddressAutocomplete";
+import { OfferForm } from "./components/OfferForm";
+import { ThankYou } from "./components/ThankYou";
 import prop1 from "./assets/prop1.jpeg";
 import prop2 from "./assets/prop2.jpeg";
 import prop3 from "./assets/prop3.jpeg";
@@ -23,28 +25,46 @@ const portfolioImages = [prop1, prop2, prop3, prop4, prop5, prop6, prop7, prop8]
 const teamImages = [team3, jose];
 const teamNames = ["Chris", "Jose"];
 
+type View = "landing" | "offer-form" | "thank-you";
+
 export default function App() {
+  const [view, setView] = useState<View>("landing");
+
   // Google Maps
   const mapsStatus = useGoogleMaps();
   const [selectedPlace, setSelectedPlace] = useState<PlaceResult | null>(null);
 
+  // Carousels — all hooks must be declared before any early returns
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [portfolioIndex, setPortfolioIndex] = useState(0);
+  const [teamIndex, setTeamIndex] = useState(0);
+
+  const prevSlide = () => setCarouselIndex((i) => (i - 1 + carouselImages.length) % carouselImages.length);
+  const nextSlide = () => setCarouselIndex((i) => (i + 1) % carouselImages.length);
+  const prevPortfolio = () => setPortfolioIndex((i) => (i - 1 + portfolioImages.length) % portfolioImages.length);
+  const nextPortfolio = () => setPortfolioIndex((i) => (i + 1) % portfolioImages.length);
+  const prevTeam = () => setTeamIndex((i) => (i - 1 + teamImages.length) % teamImages.length);
+  const nextTeam = () => setTeamIndex((i) => (i + 1) % teamImages.length);
+
   const handleSubmit = (e: { preventDefault(): void }) => {
     e.preventDefault();
     if (!selectedPlace) return;
-    // TODO: send to CRM — selectedPlace contains address, lat, lng, placeId
-    console.log("Submitting lead:", selectedPlace);
+    setView("offer-form");
   };
 
-  // Carousels
-  const [carouselIndex, setCarouselIndex] = useState(0);
-  const prevSlide = () => setCarouselIndex((i) => (i - 1 + carouselImages.length) % carouselImages.length);
-  const nextSlide = () => setCarouselIndex((i) => (i + 1) % carouselImages.length);
-  const [portfolioIndex, setPortfolioIndex] = useState(0);
-  const prevPortfolio = () => setPortfolioIndex((i) => (i - 1 + portfolioImages.length) % portfolioImages.length);
-  const nextPortfolio = () => setPortfolioIndex((i) => (i + 1) % portfolioImages.length);
-  const [teamIndex, setTeamIndex] = useState(0);
-  const prevTeam = () => setTeamIndex((i) => (i - 1 + teamImages.length) % teamImages.length);
-  const nextTeam = () => setTeamIndex((i) => (i + 1) % teamImages.length);
+  if (view === "offer-form") {
+    return (
+      <OfferForm
+        address={selectedPlace?.address ?? ""}
+        onSubmit={() => setView("thank-you")}
+        onBack={() => setView("landing")}
+      />
+    );
+  }
+
+  if (view === "thank-you") {
+    return <ThankYou onBack={() => setView("landing")} />;
+  }
 
   return (
     <div className="min-h-screen font-sans bg-[#FDFBF7] text-[#2D3A2D]">
