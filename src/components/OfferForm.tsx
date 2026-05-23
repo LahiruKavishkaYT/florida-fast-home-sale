@@ -91,7 +91,7 @@ export function OfferForm({ address, onSubmit, onBack }: OfferFormProps) {
     setSubmitError(null);
 
     try {
-      await fetch("https://n8n.srv1316814.hstgr.cloud/webhook/florida-fast-home-sale", {
+      await fetch("https://hooks.zapier.com/hooks/catch/27707571/4oqaftm/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
