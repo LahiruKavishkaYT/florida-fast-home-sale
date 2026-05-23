@@ -93,17 +93,17 @@ export function OfferForm({ address, onSubmit, onBack }: OfferFormProps) {
     try {
       await fetch("https://hooks.zapier.com/hooks/catch/27707571/4oqwgdj/", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
           firstName: form.firstName,
           lastName: form.lastName,
           email: form.email,
-          phone: form.phone,
-          homeAddress: form.homeAddress,
-          notes: form.notes,
+          phoneNumber: form.phone,
+          address: form.homeAddress,
+          comment: form.notes,
           submittedAt: new Date().toISOString(),
           source: "flfasthomesale.com",
-        }),
+        }).toString(),
       });
     } catch {
       // Proceed even if webhook fails so the user isn't blocked
