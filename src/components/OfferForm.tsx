@@ -61,6 +61,8 @@ export function OfferForm({ address, onSubmit, onBack }: OfferFormProps) {
 
   const [touched, setTouched] = useState<Partial<Record<string, boolean>>>({});
   const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const errors = validate(form);
   const showError = (field: string) =>
@@ -80,10 +82,34 @@ export function OfferForm({ address, onSubmit, onBack }: OfferFormProps) {
     setTouched((prev) => ({ ...prev, [e.target.name]: true }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitAttempted(true);
     if (Object.keys(errors).length > 0) return;
+
+    setSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      await fetch("https://n8n.srv1316814.hstgr.cloud/webhook/florida-fast-home-sale", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: form.firstName,
+          lastName: form.lastName,
+          email: form.email,
+          phone: form.phone,
+          homeAddress: form.homeAddress,
+          notes: form.notes,
+          submittedAt: new Date().toISOString(),
+          source: "flfasthomesale.com",
+        }),
+      });
+    } catch {
+      // Proceed even if webhook fails so the user isn't blocked
+    }
+
+    setSubmitting(false);
     onSubmit();
   };
 
@@ -280,11 +306,15 @@ export function OfferForm({ address, onSubmit, onBack }: OfferFormProps) {
             </div>
 
             {/* Submit */}
+            {submitError && (
+              <p className="text-xs text-red-500 text-center">{submitError}</p>
+            )}
             <button
               type="submit"
-              className="w-full py-4 bg-[#2D5A27] text-white font-bold rounded-2xl shadow-lg shadow-green-900/20 hover:bg-[#1E3D1A] transition-colors text-sm tracking-widest uppercase"
+              disabled={submitting}
+              className="w-full py-4 bg-[#2D5A27] text-white font-bold rounded-2xl shadow-lg shadow-green-900/20 hover:bg-[#1E3D1A] transition-colors text-sm tracking-widest uppercase disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Get Your Offer
+              {submitting ? "Submitting…" : "Get Your Offer"}
             </button>
           </form>
         </div>
