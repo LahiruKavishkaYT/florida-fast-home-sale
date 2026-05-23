@@ -91,10 +91,11 @@ export function OfferForm({ address, onSubmit, onBack }: OfferFormProps) {
     setSubmitError(null);
 
     try {
-      await fetch("https://hooks.zapier.com/hooks/catch/27707571/4oqwgdj/", {
+      await fetch("https://hooks.zapier.com/hooks/catch/27707571/4oqg1tw/", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           firstName: form.firstName,
           lastName: form.lastName,
           email: form.email,
@@ -103,7 +104,7 @@ export function OfferForm({ address, onSubmit, onBack }: OfferFormProps) {
           comment: form.notes,
           submittedAt: new Date().toISOString(),
           source: "flfasthomesale.com",
-        }).toString(),
+        }),
       });
     } catch {
       // Proceed even if webhook fails so the user isn't blocked
