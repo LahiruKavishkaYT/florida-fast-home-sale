@@ -91,7 +91,7 @@ export function OfferForm({ address, onSubmit, onBack }: OfferFormProps) {
     setSubmitError(null);
 
     try {
-      await fetch("https://hooks.zapier.com/hooks/catch/27707571/4oqaftm/", {
+      await fetch("https://hooks.zapier.com/hooks/catch/27707571/4oqwgdj/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
