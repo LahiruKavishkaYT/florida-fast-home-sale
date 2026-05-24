@@ -75,11 +75,11 @@ export default function App() {
             <Logo className="h-10 sm:h-14 w-auto" />
           </a>
           <div className="hidden sm:block">
-            <a href="tel:6892202289" className="bg-[#2D5A27] text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-[#1E3D1A] transition-colors">
-              Call Us: (689) 220-2289
+            <a href="tel:3214750983" className="bg-[#2D5A27] text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-[#1E3D1A] transition-colors">
+              Call Us: (321) 475-0983
             </a>
           </div>
-          <a href="tel:6892202289" className="sm:hidden bg-[#2D5A27] text-white px-4 py-2.5 rounded-full text-xs font-semibold hover:bg-[#1E3D1A] transition-colors flex items-center gap-1.5">
+          <a href="tel:3214750983" className="sm:hidden bg-[#2D5A27] text-white px-4 py-2.5 rounded-full text-xs font-semibold hover:bg-[#1E3D1A] transition-colors flex items-center gap-1.5">
             <Phone className="w-3.5 h-3.5" />
             Call Now
           </a>
@@ -382,8 +382,8 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 flex flex-col items-center">
           <Logo className="h-16 w-auto mb-6 opacity-90 hover:opacity-100 transition-opacity drop-shadow-sm" />
           
-          <a href="tel:6892202289" className="text-2xl font-bold font-heading mb-4 text-[#1A3018] hover:text-[#2D5A27] transition-colors">
-            (689) 220-2289
+          <a href="tel:3214750983" className="text-2xl font-bold font-heading mb-4 text-[#1A3018] hover:text-[#2D5A27] transition-colors">
+            (321) 475-0983
           </a>
           
           <a href="#" className="text-sm font-bold text-[#5C6B5C] hover:text-[#2D5A27] hover:underline mb-8">

@@ -135,13 +135,13 @@ export function OfferForm({ address, onSubmit, onBack }: OfferFormProps) {
             <Logo className="h-10 sm:h-14 w-auto" />
           </button>
           <a
-            href="tel:6892202289"
+            href="tel:3214750983"
             className="hidden sm:block bg-[#2D5A27] text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-[#1E3D1A] transition-colors"
           >
-            Call Us: (689) 220-2289
+            Call Us: (321) 475-0983
           </a>
           <a
-            href="tel:6892202289"
+            href="tel:3214750983"
             className="sm:hidden bg-[#2D5A27] text-white px-4 py-2.5 rounded-full text-xs font-semibold hover:bg-[#1E3D1A] transition-colors flex items-center gap-1.5"
           >
             <Phone className="w-3.5 h-3.5" />
