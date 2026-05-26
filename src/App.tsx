@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { CheckCircle2, ChevronLeft, ChevronRight, XCircle, FileText, Users, Banknote, Phone } from "lucide-react";
 import { Logo } from "./components/Logo";
+import { useGoogleMaps } from "./hooks/useGoogleMaps";
+import { CashOfferForm } from "./components/CashOfferForm";
 import { ThankYou } from "./components/ThankYou";
 import prop1 from "./assets/prop1.jpeg";
 import prop2 from "./assets/prop2.jpeg";
@@ -10,8 +12,6 @@ import prop5 from "./assets/prop5.jpeg";
 import prop6 from "./assets/prop6.jpeg";
 import prop7 from "./assets/prop7.jpeg";
 import prop8 from "./assets/prop8.jpeg";
-import prop9 from "./assets/prop9.jpeg";
-import prop10 from "./assets/prop10.jpeg";
 import prop11 from "./assets/prop11.jpeg";
 import team3 from "./assets/team-3.jpg";
 import jose from "./assets/jose.jpeg";
@@ -23,74 +23,11 @@ const teamNames = ["Chris", "Jose"];
 
 type View = "landing" | "thank-you";
 
-interface HeroForm {
-  name: string;
-  phone: string;
-  email: string;
-  propertyAddress: string;
-  comments: string;
-}
-
-function validateHero(f: HeroForm) {
-  const e: Partial<Record<keyof HeroForm, string>> = {};
-  if (!f.name.trim()) e.name = "Name is required.";
-  if (!f.phone.trim()) e.phone = "Phone is required.";
-  else if (f.phone.replace(/\D/g, "").length < 10) e.phone = "Enter a valid 10-digit phone number.";
-  if (!f.email.trim()) e.email = "Email is required.";
-  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)) e.email = "Enter a valid email.";
-  if (!f.propertyAddress.trim()) e.propertyAddress = "Property address is required.";
-  return e;
-}
-
 export default function App() {
   const [view, setView] = useState<View>("landing");
 
-  const [heroForm, setHeroForm] = useState<HeroForm>({ name: "", phone: "", email: "", propertyAddress: "", comments: "" });
-  const [heroTouched, setHeroTouched] = useState<Partial<Record<string, boolean>>>({});
-  const [heroSubmitAttempted, setHeroSubmitAttempted] = useState(false);
-  const [heroSubmitting, setHeroSubmitting] = useState(false);
-
-  const heroErrors = validateHero(heroForm);
-  const showHeroError = (field: string) => (heroTouched[field] || heroSubmitAttempted) && heroErrors[field as keyof HeroForm];
-
-  const handleHeroChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setHeroForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-  const handleHeroBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setHeroTouched((prev) => ({ ...prev, [e.target.name]: true }));
-  };
-  const handleHeroSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setHeroSubmitAttempted(true);
-    if (Object.keys(heroErrors).length > 0) return;
-    setHeroSubmitting(true);
-    try {
-      await fetch("https://hooks.zapier.com/hooks/catch/25065754/4oqx22u/", {
-        method: "POST",
-        mode: "no-cors",
-        body: new URLSearchParams({
-          name: heroForm.name,
-          phoneNumber: heroForm.phone,
-          email: heroForm.email,
-          address: heroForm.propertyAddress,
-          comment: heroForm.comments,
-          submittedAt: new Date().toISOString(),
-          source: "flfasthomesale.com",
-        }),
-      });
-    } catch { /* proceed even if webhook fails */ }
-    // Fire GTM conversion event
-    const w = window as unknown as { dataLayer: object[] };
-    w.dataLayer = w.dataLayer ?? [];
-    w.dataLayer.push({ event: "generate_lead", form_name: "hero_offer_form", source: "flfasthomesale.com" });
-    setHeroSubmitting(false);
-    setView("thank-you");
-  };
-
-  const heroInputClass = (field: string) =>
-    `w-full px-4 py-3 rounded-xl border text-sm text-[#1A1A1A] bg-white placeholder:text-[#ABABAB] focus:outline-none focus:ring-2 transition-colors ${
-      showHeroError(field) ? "border-red-400 focus:ring-red-300" : "border-[#E0E0E0] focus:ring-[#1A1A1A]/20"
-    }`;
+  // Google Maps
+  const mapsStatus = useGoogleMaps();
 
   // Carousels — all hooks must be declared before any early returns
   const [carouselIndex, setCarouselIndex] = useState(0);
@@ -129,63 +66,28 @@ export default function App() {
       </nav>
 
       {/* Hero Section */}
-      <section id="hero" className="relative pt-20 pb-12 lg:pt-24 lg:pb-16 flex items-center min-h-[90vh]">
+      <section className="relative flex items-center min-h-screen pt-20">
         <div className="absolute inset-0 z-0 select-none">
           <img
-            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=2000"
-            alt="Beautiful home exterior"
+            src="https://images.unsplash.com/photo-1449844908441-8829872d2607?auto=format&fit=crop&q=80&w=2000"
+            alt="Home exterior"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/55" />
         </div>
-
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-          {/* Left: Text */}
-          <div className="text-white">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold mb-6 leading-[1.1]">
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Left: Headline */}
+          <div>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight mb-6">
               The Simplest Way to Sell Your Florida Home – without Fees.
             </h1>
-            <p className="text-lg text-white/80 leading-relaxed">
-              At <span className="text-white font-bold">Florida Fast Home Sale</span>, we believe the house selling process should be faster, easier, and hassle-free for Florida home sellers. <span className="font-bold text-white underline underline-offset-4">Get Your Offer Today!</span>
+            <p className="text-white/75 text-lg leading-relaxed max-w-md">
+              At Florida Fast Home Sale, we believe the house selling process should be faster, easier, and hassle-free for Florida home sellers. Get Your Offer Today!
             </p>
           </div>
-
-          {/* Right: Form card */}
-          <div className="bg-white rounded-3xl shadow-2xl p-8 sm:p-10">
-            <h2 className="text-2xl font-heading font-bold text-[#1A1A1A] text-center mb-6">
-              Get Your Cash Offer Today
-            </h2>
-            <form onSubmit={handleHeroSubmit} noValidate className="space-y-3">
-              <div>
-                <input type="text" name="name" placeholder="Name" value={heroForm.name} onChange={handleHeroChange} onBlur={handleHeroBlur} className={heroInputClass("name")} />
-                {showHeroError("name") && <p className="mt-1 text-xs text-red-500">{heroErrors.name}</p>}
-              </div>
-              <div>
-                <input type="tel" name="phone" placeholder="Phone" value={heroForm.phone} onChange={handleHeroChange} onBlur={handleHeroBlur} className={heroInputClass("phone")} />
-                {showHeroError("phone") && <p className="mt-1 text-xs text-red-500">{heroErrors.phone}</p>}
-              </div>
-              <div>
-                <input type="email" name="email" placeholder="Email" value={heroForm.email} onChange={handleHeroChange} onBlur={handleHeroBlur} className={heroInputClass("email")} />
-                {showHeroError("email") && <p className="mt-1 text-xs text-red-500">{heroErrors.email}</p>}
-              </div>
-              <div>
-                <input type="text" name="propertyAddress" placeholder="Property Address" value={heroForm.propertyAddress} onChange={handleHeroChange} onBlur={handleHeroBlur} className={heroInputClass("propertyAddress")} />
-                {showHeroError("propertyAddress") && <p className="mt-1 text-xs text-red-500">{heroErrors.propertyAddress}</p>}
-              </div>
-              <div>
-                <textarea name="comments" placeholder="Comments" value={heroForm.comments} onChange={handleHeroChange} rows={3} className="w-full px-4 py-3 rounded-xl border border-[#E0E0E0] text-sm text-[#1A1A1A] bg-white placeholder:text-[#ABABAB] focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/20 transition-colors resize-none" />
-              </div>
-              <button
-                type="submit"
-                disabled={heroSubmitting}
-                className="w-full py-4 bg-[#1A1A1A] text-white font-bold rounded-2xl text-sm tracking-widest uppercase hover:bg-black transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {heroSubmitting ? "Submitting…" : "Get My Cash Offer"}
-              </button>
-              <p className="text-center text-xs text-[#ABABAB]">
-                This field is for validation purposes and should be left unchanged.
-              </p>
-            </form>
+          {/* Right: Form */}
+          <div>
+            <CashOfferForm mapsStatus={mapsStatus} onSubmit={() => setView("thank-you")} />
           </div>
         </div>
       </section>
@@ -409,25 +311,17 @@ export default function App() {
       </section>
 
       {/* Bottom CTA Section */}
-      <section className="relative py-32 flex items-center justify-center px-4 sm:px-6">
+      <section className="relative flex items-center justify-center py-20 px-4">
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1441441247730-d09529166668?auto=format&fit=crop&q=80&w=2000"
-            alt="Beautiful nature scenery"
+            alt="Nature scenery"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-[#A1B0A1]/20 backdrop-blur-sm mix-blend-multiply" />
+          <div className="absolute inset-0 bg-black/50" />
         </div>
-
-        <div className="relative z-10 w-full max-w-3xl bg-white/95 backdrop-blur-md p-10 sm:p-14 rounded-[32px] text-center shadow-2xl border border-[#E1EADB]">
-          <h2 className="text-3xl sm:text-4xl font-heading font-bold mb-4 text-[#1A3018]">Ready to Get Your Cash Offer?</h2>
-          <p className="text-[#5C6B5C] mb-8">Fill out the form at the top of the page — we'll reach out within 24 hours.</p>
-          <a
-            href="#hero"
-            className="inline-block px-10 py-4 bg-[#2D5A27] text-white font-bold rounded-2xl hover:bg-[#1E3D1A] transition-colors shadow-md text-sm tracking-widest uppercase"
-          >
-            GET YOUR OFFER
-          </a>
+        <div className="relative z-10 w-full">
+          <CashOfferForm mapsStatus={mapsStatus} onSubmit={() => setView("thank-you")} />
         </div>
       </section>
 
