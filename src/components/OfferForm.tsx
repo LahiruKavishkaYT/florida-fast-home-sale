@@ -1,229 +1,227 @@
 import { useState } from "react";
-import { Logo } from "./Logo";
-import { Phone } from "lucide-react";
+import { AddressAutocomplete } from "./AddressAutocomplete";
+import type { PlaceResult } from "./AddressAutocomplete";
+import type { GoogleMapsStatus } from "../hooks/useGoogleMaps";
 
 interface OfferFormProps {
-  address: string;
+  mapsStatus: GoogleMapsStatus;
   onSubmit: () => void;
-  onBack: () => void;
 }
 
 interface FormState {
   name: string;
   phone: string;
   email: string;
-  propertyAddress: string;
-  comments: string;
+  notes: string;
+  consent: boolean;
 }
 
-function validate(form: FormState) {
-  const errors: Partial<Record<keyof FormState, string>> = {};
+function validate(form: FormState, address: string) {
+  const errors: Partial<Record<string, string>> = {};
   if (!form.name.trim()) errors.name = "Name is required.";
-  if (!form.phone.trim()) {
-    errors.phone = "Phone is required.";
-  } else if (form.phone.replace(/\D/g, "").length < 10) {
-    errors.phone = "Enter a valid 10-digit phone number.";
-  }
   if (!form.email.trim()) {
     errors.email = "Email is required.";
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
     errors.email = "Enter a valid email address.";
   }
-  if (!form.propertyAddress.trim()) errors.propertyAddress = "Property address is required.";
+  const digits = form.phone.replace(/\D/g, "");
+  if (!form.phone.trim()) {
+    errors.phone = "Phone number is required.";
+  } else if (digits.length < 10) {
+    errors.phone = "Enter a valid 10-digit phone number.";
+  }
+  if (!address.trim()) errors.homeAddress = "Address is required.";
+  if (!form.consent) errors.consent = "You must agree to be contacted.";
   return errors;
 }
 
-export function OfferForm({ address, onSubmit, onBack }: OfferFormProps) {
+const inputBase =
+  "w-full px-4 py-3 rounded-lg bg-white border border-gray-200 text-[#1A3018] text-sm focus:outline-none focus:ring-2 focus:ring-[#2D5A27] placeholder:text-gray-400 transition-colors";
+
+export function OfferForm({ mapsStatus, onSubmit }: OfferFormProps) {
   const [form, setForm] = useState<FormState>({
     name: "",
     phone: "",
     email: "",
-    propertyAddress: address,
-    comments: "",
+    notes: "",
+    consent: false,
   });
+  const [selectedPlace, setSelectedPlace] = useState<PlaceResult | null>(null);
   const [touched, setTouched] = useState<Partial<Record<string, boolean>>>({});
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  const errors = validate(form);
+  const errors = validate(form, selectedPlace?.address ?? "");
   const showError = (field: string) =>
-    (touched[field] || submitAttempted) && errors[field as keyof FormState];
+    (touched[field] || submitAttempted) && errors[field];
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value, type } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+    }));
   };
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleBlur = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setTouched((prev) => ({ ...prev, [e.target.name]: true }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitAttempted(true);
     if (Object.keys(errors).length > 0) return;
 
     setSubmitting(true);
+    const nameParts = form.name.trim().split(/\s+/);
+    const firstName = nameParts[0] ?? "";
+    const lastName = nameParts.slice(1).join(" ") || firstName;
+
     try {
       await fetch("https://hooks.zapier.com/hooks/catch/25065754/4oqx22u/", {
         method: "POST",
         mode: "no-cors",
         body: new URLSearchParams({
-          name: form.name,
-          phoneNumber: form.phone,
+          firstName,
+          lastName,
           email: form.email,
-          address: form.propertyAddress,
-          comment: form.comments,
+          phoneNumber: form.phone,
+          address: selectedPlace?.address ?? "",
+          comment: form.notes,
           submittedAt: new Date().toISOString(),
           source: "flfasthomesale.com",
         }),
       });
     } catch {
-      // Proceed even if webhook fails
+      // proceed even if webhook fails
     }
+
     setSubmitting(false);
     onSubmit();
   };
 
-  const inputClass = (field: string) =>
-    `w-full px-5 py-4 rounded-2xl border text-[#1A1A1A] text-sm bg-white placeholder:text-[#ABABAB] focus:outline-none focus:ring-2 transition-colors ${
-      showError(field)
-        ? "border-red-400 focus:ring-red-300"
-        : "border-[#E0E0E0] focus:ring-[#1A1A1A]/20"
-    }`;
+  const fieldClass = (field: string) =>
+    `${inputBase} ${showError(field) ? "border-red-400 focus:ring-red-400" : ""}`;
 
   return (
-    <div className="min-h-screen font-sans relative flex flex-col">
-      {/* Background */}
-      <div className="fixed inset-0 z-0 select-none pointer-events-none">
-        <img
-          src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=2000"
-          alt=""
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black/55" />
-      </div>
+    <div className="bg-white rounded-2xl shadow-2xl p-8 w-full">
+      <h2 className="text-xl font-bold text-center text-[#1A3018] mb-6">
+        Get Your Cash Offer Today
+      </h2>
 
-      {/* Nav */}
-      <nav className="relative z-10 w-full bg-black/30 backdrop-blur-md border-b border-white/10 pb-2 pt-3">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-          <button onClick={onBack} className="flex-shrink-0 focus:outline-none">
-            <Logo className="h-10 sm:h-14 w-auto" inverted />
-          </button>
-          <a
-            href="tel:3214750983"
-            className="hidden sm:block bg-white text-[#1A1A1A] px-6 py-3 rounded-full text-sm font-semibold hover:bg-gray-100 transition-colors"
-          >
-            Call Us: (321) 475-0983
-          </a>
-          <a
-            href="tel:3214750983"
-            className="sm:hidden bg-white text-[#1A1A1A] px-4 py-2.5 rounded-full text-xs font-semibold hover:bg-gray-100 transition-colors flex items-center gap-1.5"
-          >
-            <Phone className="w-3.5 h-3.5" />
-            Call Now
-          </a>
+      <form onSubmit={handleSubmit} noValidate className="space-y-3">
+        {/* Name */}
+        <div>
+          <input
+            type="text"
+            name="name"
+            placeholder="Name"
+            value={form.name}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            className={fieldClass("name")}
+          />
+          {showError("name") && (
+            <p className="mt-1 text-xs text-red-500">{errors.name}</p>
+          )}
         </div>
-      </nav>
 
-      {/* Form card */}
-      <div className="relative z-10 flex-1 flex items-center justify-center px-4 py-12 sm:py-16">
-        <div className="w-full max-w-lg bg-white rounded-3xl shadow-2xl p-8 sm:p-10">
-          <h1 className="text-3xl sm:text-4xl font-heading font-bold text-[#1A1A1A] text-center mb-8">
-            Get Your Cash Offer Today
-          </h1>
-
-          <form onSubmit={handleSubmit} noValidate className="space-y-4">
-            {/* Name */}
-            <div>
-              <input
-                type="text"
-                name="name"
-                placeholder="Name"
-                value={form.name}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={inputClass("name")}
-              />
-              {showError("name") && (
-                <p className="mt-1 text-xs text-red-500">{errors.name}</p>
-              )}
-            </div>
-
-            {/* Phone */}
-            <div>
-              <input
-                type="tel"
-                name="phone"
-                placeholder="Phone"
-                value={form.phone}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={inputClass("phone")}
-              />
-              {showError("phone") && (
-                <p className="mt-1 text-xs text-red-500">{errors.phone}</p>
-              )}
-            </div>
-
-            {/* Email */}
-            <div>
-              <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={form.email}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={inputClass("email")}
-              />
-              {showError("email") && (
-                <p className="mt-1 text-xs text-red-500">{errors.email}</p>
-              )}
-            </div>
-
-            {/* Property Address */}
-            <div>
-              <input
-                type="text"
-                name="propertyAddress"
-                placeholder="Property Address"
-                value={form.propertyAddress}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={inputClass("propertyAddress")}
-              />
-              {showError("propertyAddress") && (
-                <p className="mt-1 text-xs text-red-500">{errors.propertyAddress}</p>
-              )}
-            </div>
-
-            {/* Comments */}
-            <div>
-              <textarea
-                name="comments"
-                placeholder="Comments"
-                value={form.comments}
-                onChange={handleChange}
-                rows={4}
-                className="w-full px-5 py-4 rounded-2xl border border-[#E0E0E0] text-[#1A1A1A] text-sm bg-white placeholder:text-[#ABABAB] focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/20 transition-colors resize-none"
-              />
-            </div>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={submitting}
-              className="w-full py-5 bg-[#1A1A1A] text-white font-bold rounded-2xl text-sm tracking-widest uppercase hover:bg-black transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {submitting ? "Submitting…" : "Get My Cash Offer"}
-            </button>
-
-            <p className="text-center text-xs text-[#ABABAB] pt-1">
-              This field is for validation purposes and should be left unchanged.
-            </p>
-          </form>
+        {/* Phone */}
+        <div>
+          <input
+            type="tel"
+            name="phone"
+            placeholder="Phone"
+            value={form.phone}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            className={fieldClass("phone")}
+          />
+          {showError("phone") && (
+            <p className="mt-1 text-xs text-red-500">{errors.phone}</p>
+          )}
         </div>
-      </div>
+
+        {/* Email */}
+        <div>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            className={fieldClass("email")}
+          />
+          {showError("email") && (
+            <p className="mt-1 text-xs text-red-500">{errors.email}</p>
+          )}
+        </div>
+
+        {/* Address */}
+        <div>
+          <AddressAutocomplete
+            mapsStatus={mapsStatus}
+            onSelect={setSelectedPlace}
+            placeholder="Address"
+            inputClassName="!rounded-lg !py-3 !bg-white !border-gray-200"
+          />
+          {showError("homeAddress") && (
+            <p className="mt-1 text-xs text-red-500">{errors.homeAddress}</p>
+          )}
+        </div>
+
+        {/* Comments */}
+        <div>
+          <textarea
+            name="notes"
+            placeholder="Comments"
+            value={form.notes}
+            onChange={handleChange}
+            rows={3}
+            className={`${inputBase} resize-none`}
+          />
+        </div>
+
+        {/* Consent */}
+        <label className="flex items-start gap-3 pt-1 cursor-pointer">
+          <input
+            type="checkbox"
+            name="consent"
+            checked={form.consent}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            className="mt-0.5 w-4 h-4 rounded accent-[#2D5A27] flex-shrink-0"
+          />
+          <span className="text-xs text-gray-500 leading-relaxed">
+            I agree to be contacted by Florida Fast Home Sale via call, email,
+            and text. To opt-out, reply 'stop' at any time.{" "}
+            <a href="#" className="underline text-[#1A3018]">
+              Privacy Policy
+            </a>
+          </span>
+        </label>
+        {showError("consent") && (
+          <p className="text-xs text-red-500">{errors.consent}</p>
+        )}
+
+        {/* Submit */}
+        <button
+          type="submit"
+          disabled={submitting}
+          className="w-full py-4 bg-black text-white font-bold rounded-lg uppercase tracking-widest text-sm hover:bg-gray-900 transition-colors disabled:opacity-60 disabled:cursor-not-allowed mt-1"
+        >
+          {submitting ? "Submitting…" : "Get My Cash Offer"}
+        </button>
+
+        <p className="text-center text-xs text-gray-400 pt-1">
+          This field is for validation purposes and should be left unchanged.
+        </p>
+      </form>
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { CheckCircle2, ChevronLeft, ChevronRight, XCircle, FileText, Users, Banknote, Phone } from "lucide-react";
+import { CheckCircle2, ChevronLeft, ChevronRight, XCircle, FileText, Users, Banknote, Phone, ShieldCheck, Mail } from "lucide-react";
 import { Logo } from "./components/Logo";
 import { useGoogleMaps } from "./hooks/useGoogleMaps";
-import { CashOfferForm } from "./components/CashOfferForm";
+import { OfferForm } from "./components/OfferForm";
 import { ThankYou } from "./components/ThankYou";
 import prop1 from "./assets/prop1.jpeg";
 import prop2 from "./assets/prop2.jpeg";
@@ -66,28 +66,30 @@ export default function App() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative flex items-center min-h-screen pt-20">
+      <section id="hero" className="relative flex items-center min-h-screen pt-20">
         <div className="absolute inset-0 z-0 select-none">
           <img
-            src="https://images.unsplash.com/photo-1449844908441-8829872d2607?auto=format&fit=crop&q=80&w=2000"
-            alt="Home exterior"
+            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=2000"
+            alt="Beautiful home exterior"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black/55" />
+          <div className="absolute inset-0 bg-black/50" />
         </div>
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Left: Headline */}
-          <div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight mb-6">
-              The Simplest Way to Sell Your Florida Home – without Fees.
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full grid lg:grid-cols-2 gap-12 lg:gap-16 items-center py-16">
+          <div className="text-white">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold mb-6 leading-[1.1]">
+              The Simplest Way to Sell Your Florida Home{" "}
+              <span className="italic font-medium">– without Fees.</span>
             </h1>
-            <p className="text-white/75 text-lg leading-relaxed max-w-md">
-              At Florida Fast Home Sale, we believe the house selling process should be faster, easier, and hassle-free for Florida home sellers. Get Your Offer Today!
+            <p className="text-lg sm:text-xl text-white/80 max-w-lg">
+              At <span className="font-bold text-white">Florida Fast Home Sale</span>, we believe the house selling process should be faster, easier, and hassle-free for Florida home sellers.{" "}
+              <span className="font-bold underline underline-offset-4">Get Your Offer Today!</span>
             </p>
           </div>
-          {/* Right: Form */}
+
           <div>
-            <CashOfferForm mapsStatus={mapsStatus} onSubmit={() => setView("thank-you")} />
+            <OfferForm mapsStatus={mapsStatus} onSubmit={() => setView("thank-you")} />
           </div>
         </div>
       </section>
@@ -129,6 +131,20 @@ export default function App() {
               <h3 className="text-xl font-bold mb-4">Receive Your Cash Offer</h3>
               <p className="text-[#E1EADB] text-sm leading-relaxed">
                 When you approve our offer, we will close on your timeline and you get paid within days. It is that simple.
+              </p>
+            </div>
+          </div>
+
+          {/* Trust strip */}
+          <div className="mt-10 max-w-2xl mx-auto border-l-4 border-[#2D5A27] bg-[#F5FAF4] border border-[#C5D9C2] rounded-2xl px-6 py-5 flex items-start gap-4">
+            <div className="flex-shrink-0 bg-[#2D5A27]/10 rounded-full p-2.5 mt-0.5">
+              <ShieldCheck className="w-5 h-5 text-[#2D5A27]" />
+            </div>
+            <div>
+              <p className="text-sm text-[#3D5C3A] leading-relaxed">
+                Every closing is handled through{" "}
+                <span className="font-semibold text-[#2D5A27]">First International Title</span>{" "}
+                — your guarantee of a safe, transparent transaction.
               </p>
             </div>
           </div>
@@ -212,7 +228,10 @@ export default function App() {
               </div>
             </div>
             
-            <button className="mt-8 px-10 py-4 bg-[#FDFBF7] text-[#1A3018] font-bold rounded-2xl hover:bg-white transition-colors w-full max-w-md text-center shadow-lg">
+            <button
+              onClick={() => document.getElementById("hero")?.scrollIntoView({ behavior: "smooth" })}
+              className="mt-8 px-10 py-4 bg-[#FDFBF7] text-[#1A3018] font-bold rounded-2xl hover:bg-white transition-colors w-full max-w-md text-center shadow-lg"
+            >
               GET MY OFFER
             </button>
           </div>
@@ -310,36 +329,90 @@ export default function App() {
         </div>
       </section>
 
+      {/* About Our Partners */}
+      <section className="py-16 bg-[#F5FAF4] border-b border-[#E1EADB] px-4 sm:px-6">
+        <div className="max-w-4xl mx-auto">
+          <span className="text-[10px] font-bold text-[#A1B0A1] tracking-widest uppercase mb-2 block">Our Partners</span>
+          <h2 className="text-2xl sm:text-3xl font-heading font-bold mb-5 text-[#1A3018]">About Our Partners</h2>
+          <p className="text-sm text-[#5C6B5C] leading-loose mb-6">
+            Florida Fast Home Sale operates as a real estate investment group serving homeowners across Florida. Purchase contracts may be executed under one of our affiliated entities:{" "}
+            <span className="font-semibold text-[#1A3018]">Legacy RE Capital Group LLC</span> and{" "}
+            <span className="font-semibold text-[#1A3018]">All Door Investments LLC</span> — each a legally registered and active business entity in good standing. All transactions are processed through a licensed title company ensuring a fully verified and transparent closing process.
+          </p>
+          <a
+            href="mailto:whateverittakessolutions@gmail.com"
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#2D5A27] hover:underline"
+          >
+            <Mail className="w-4 h-4 flex-shrink-0" />
+            whateverittakessolutions@gmail.com
+          </a>
+        </div>
+      </section>
+
       {/* Bottom CTA Section */}
-      <section className="relative flex items-center justify-center py-20 px-4">
+      <section className="relative py-24 flex items-center justify-center px-4 sm:px-6">
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1441441247730-d09529166668?auto=format&fit=crop&q=80&w=2000"
-            alt="Nature scenery"
+            alt="Beautiful nature scenery"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/50" />
         </div>
-        <div className="relative z-10 w-full">
-          <CashOfferForm mapsStatus={mapsStatus} onSubmit={() => setView("thank-you")} />
+
+        <div className="relative z-10 w-full max-w-lg">
+          <h2 className="text-3xl sm:text-4xl font-heading font-bold mb-8 text-center text-white">
+            Submit Your Property Here!
+          </h2>
+          <OfferForm mapsStatus={mapsStatus} onSubmit={() => setView("thank-you")} />
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#FDFBF7] py-16 text-center border-t border-[#E1EADB]">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col items-center">
-          <Logo className="h-16 w-auto mb-6 opacity-90 hover:opacity-100 transition-opacity drop-shadow-sm" />
-          
-          <a href="tel:3214750983" className="text-2xl font-bold font-heading mb-4 text-[#1A3018] hover:text-[#2D5A27] transition-colors">
-            (321) 475-0983
-          </a>
-          
-          <a href="#" className="text-sm font-bold text-[#5C6B5C] hover:text-[#2D5A27] hover:underline mb-8">
-            Privacy Policy
-          </a>
-          
-          <p className="text-xs text-[#94A194]">
-            Copyright {new Date().getFullYear()} © All rights Reserved.
+      <footer className="bg-[#1A3018] text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 grid md:grid-cols-3 gap-12">
+          {/* Brand */}
+          <div className="flex flex-col items-start">
+            <Logo className="h-14 w-auto mb-4 brightness-0 invert opacity-90" />
+            <p className="text-sm text-white/60 leading-relaxed">
+              Serving homeowners across Florida with speed, honesty, and zero hassle.
+            </p>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <p className="text-[10px] font-bold text-white/40 tracking-widest uppercase mb-4">Contact Us</p>
+            <div className="space-y-3">
+              <a href="tel:3214750983" className="flex items-center gap-3 text-sm text-white/80 hover:text-white transition-colors group">
+                <Phone className="w-4 h-4 text-[#6BAA62] flex-shrink-0 group-hover:scale-110 transition-transform" />
+                (321) 475-0983
+              </a>
+              <a href="mailto:Team@flfasthomesale.com" className="flex items-center gap-3 text-sm text-white/80 hover:text-white transition-colors group">
+                <Mail className="w-4 h-4 text-[#6BAA62] flex-shrink-0 group-hover:scale-110 transition-transform" />
+                Team@flfasthomesale.com
+              </a>
+            </div>
+          </div>
+
+          {/* Links + CTA */}
+          <div>
+            <p className="text-[10px] font-bold text-white/40 tracking-widest uppercase mb-4">Quick Links</p>
+            <div className="space-y-3 mb-6">
+              <a href="#" className="block text-sm text-white/60 hover:text-white transition-colors">Privacy Policy</a>
+            </div>
+            <a
+              href="#hero"
+              className="inline-block px-5 py-2.5 rounded-lg border border-white/20 text-sm font-semibold text-white hover:bg-white hover:text-[#1A3018] transition-all"
+            >
+              Get My Cash Offer ↑
+            </a>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="border-t border-white/10 py-5 text-center">
+          <p className="text-xs text-white/30">
+            Copyright {new Date().getFullYear()} © Florida Fast Home Sale. All rights reserved.
           </p>
         </div>
       </footer>

@@ -10,3 +10,4 @@ coverage/
 
 # Original MOV source — use vid.mp4 instead
 *.MOV
+.gstack/
