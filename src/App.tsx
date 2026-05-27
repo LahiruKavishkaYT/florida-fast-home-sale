@@ -334,10 +334,8 @@ export default function App() {
         <div className="max-w-4xl mx-auto">
           <span className="text-[10px] font-bold text-[#A1B0A1] tracking-widest uppercase mb-2 block">Our Partners</span>
           <h2 className="text-2xl sm:text-3xl font-heading font-bold mb-5 text-[#1A3018]">About Our Partners</h2>
-          <p className="text-sm text-[#5C6B5C] leading-loose mb-6">
-            Florida Fast Home Sale operates as a real estate investment group serving homeowners across Florida. Purchase contracts may be executed under one of our affiliated entities:{" "}
-            <span className="font-semibold text-[#1A3018]">Legacy RE Capital Group LLC ,</span> <span className="font-semibold text-[#1A3018]">Whatever It Takes Solutions LLC</span> and{" "}
-            <span className="font-semibold text-[#1A3018]">All Door Investments LLC</span> — each a legally registered and active business entity in good standing. All transactions are processed through a licensed title company ensuring a fully verified and transparent closing process.
+          <p className="text-sm font-bold text-[#1A3018] leading-loose mb-6">
+            Florida Fast Home Sale operates as a real estate investment group serving homeowners across Florida. Purchase contracts may be executed under one of our affiliated entities: Legacy RE Capital Group LLC, Whatever It Takes Solutions LLC and All Door Investments LLC — each a legally registered and active business entity in good standing. All transactions are processed through a licensed title company ensuring a fully verified and transparent closing process.
           </p>
         
         </div>
