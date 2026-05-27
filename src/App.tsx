@@ -15,6 +15,7 @@ import prop8 from "./assets/prop8.jpeg";
 import prop11 from "./assets/prop11.jpeg";
 import team3 from "./assets/team-3.jpg";
 import jose from "./assets/jose.jpeg";
+import heroBg from "./assets/home.jpeg";
 
 const carouselImages = [prop4, prop7, prop11];
 const portfolioImages = [prop1, prop2, prop3, prop4, prop5, prop6, prop7, prop8];
@@ -69,7 +70,7 @@ export default function App() {
       <section id="hero" className="relative flex items-center min-h-screen pt-20">
         <div className="absolute inset-0 z-0 select-none">
           <img
-            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=2000"
+            src={heroBg}
             alt="Beautiful home exterior"
             className="w-full h-full object-cover"
           />
